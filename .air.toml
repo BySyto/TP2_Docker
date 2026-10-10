@@ -1,0 +1,138 @@
+# .air.toml - Air Configuration for Hot Reloading
+
+# This file configures how Air watches and rebuilds your Go application
+
+# Root directory for watching - use "." for current directory
+root = "/app"
+
+# Temporary directory where Air stores build artifacts
+# This directory is created automatically and should be gitignored
+tmp_dir = "tmp"
+
+[build]
+# Command to build your application
+# Add any build flags you need here (like -race for race detection)
+cmd = "go build -o ./tmp/main ."
+
+
+
+# Entrypoint binary relative to root
+# Air recommends this over relying on bin alone
+entrypoint = ["./tmp/main"]
+
+# Arguments to pass to your application when running
+# Useful for passing flags or configuration
+args_bin = []
+
+# Pre-build command - runs before each build
+# Useful for code generation, proto compilation, etc.
+pre_cmd = []
+
+# Post-build command - runs after each successful build
+# Useful for running migrations or other setup tasks
+post_cmd = []
+
+# Enable polling mode for file watching (useful for Docker on some OSes)
+# Set to true if you're on Windows or using certain Docker setups
+poll = false
+
+# Polling interval in milliseconds (only used if poll = true)
+poll_interval = 500
+
+# Build delay after file change is detected (in milliseconds)
+# Helps batch multiple rapid changes into one rebuild
+delay = 1000
+
+# Stop running the old binary before building the new one
+# Recommended to avoid port conflicts
+stop_on_error = true
+
+# Send interrupt signal before killing process
+# Allows graceful shutdown of your application
+send_interrupt = true
+
+# Delay after interrupt before force killing
+kill_delay = "500ms"
+
+# Rerun binary on build error - useful for debugging
+rerun = false
+
+# Delay before rerunning (in milliseconds)
+rerun_delay = 500
+
+# Build error log file, placed inside tmp_dir
+log = "build-errors.log"
+
+# Directories to watch for changes
+# Air watches the whole root unless you restrict it here
+include_dir = []
+
+# Directories to exclude from watching
+# These directories will be ignored when detecting file changes
+exclude_dir = [
+    "tmp",
+    "vendor",
+    "node_modules",
+    ".git",
+    "testdata",
+    "docs",
+    "scripts",
+]
+
+# File patterns to exclude from watching
+# Useful for ignoring generated files, tests, or documentation
+exclude_regex = [
+    "_test\\.go$",
+    "_mock\\.go$",
+    "\\.pb\\.go$",
+    "swagger\\.json$",
+    "\\.md$",
+]
+
+# File extensions to watch - only these file types trigger rebuilds
+# Add more extensions if you have other file types that should trigger rebuilds
+include_ext = ["go", "tpl", "tmpl", "html", "env"]
+
+# Specific files to exclude from watching
+exclude_file = [
+    "go.sum",
+    ".air.toml",
+]
+
+# Specific files to watch (in addition to extension-based matching)
+include_file = []
+
+# Exclude unchanged files from triggering rebuilds
+exclude_unchanged = false
+
+[color]
+# Customize output colors for better readability in terminal
+main = "magenta"
+watcher = "cyan"
+build = "yellow"
+runner = "green"
+
+[log]
+# Log output settings
+# Time format for logs (Go time format)
+time = true
+
+# Only show main binary output (hide Air's internal logs)
+main_only = false
+
+[misc]
+# Clean temporary directory on exit
+clean_on_exit = true
+
+[screen]
+# Clear screen on rebuild for cleaner output
+clear_on_rebuild = true
+
+# Keep scroll position (set to false for always scrolling to top)
+keep_scroll = true
+
+[proxy]
+# Proxy configuration (optional, for advanced setups)
+enabled = false
+proxy_port = 8090
+app_port = 8080

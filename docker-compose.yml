@@ -1,0 +1,34 @@
+services:
+    guestbook:
+      build:
+        context: .
+        dockerfile: Dockerfile
+      ports:
+          - "3000:3000"
+      restart: unless-stopped
+      depends_on:
+        - redis
+      volumes:
+        - ./:/app/
+      environment: 
+        REDIS_HOST: redis 
+      networks: 
+        - backend
+
+
+    redis:
+      image: "redis:7" 
+      ports: 
+        - 6379
+      restart: unless-stopped
+      volumes:
+        - redis_data:/data
+      networks:
+        - backend
+
+networks:
+  backend:    
+
+volumes:
+  redis_data:
+
