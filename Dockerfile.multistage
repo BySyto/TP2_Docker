@@ -1,22 +1,16 @@
-FROM golang:1.27 AS build-stage
+FROM golang:1.27 AS build
 
 WORKDIR /app
 COPY go.mod go.sum ./
 RUN go mod download
-COPY *.go ./
-RUN CGO_ENABLED=0 GOOS=linux go build -o /guestbook
-RUN go mod tidy
-FROM build-stage AS run-test-stage
-RUN go rest -v ./...
+COPY . .
+RUN CGO_ENABLED=0 GOOS=linux go build -o /guestbook .
 
-FROM debian AS build-release-stage
+FROM debian:stable-slim
 
 WORKDIR /
+COPY --from=build /guestbook /guestbook
+COPY --from=build /app/public /public
 
-COPY --from=build-stage /guestbook /
-
-COPY ./public public
-EXPOSE 8080
-
-
+EXPOSE 3000
 ENTRYPOINT ["/guestbook"]
